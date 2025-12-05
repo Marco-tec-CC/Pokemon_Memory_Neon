@@ -2,46 +2,46 @@
 /* 1. Definições de Variáveis e Temas */
 /* ================================================= */
 
-/* Início: Tema Escuro Padrão (Dark Mode) */
+/* INÍCIO: Tema Escuro NOVO (Dark Mode) - Preto com Neon Dourado */
 :root {
-    --color-background: #120A24;       /* Fundo escuro roxo (fallback) */
-    --color-primary: #00FFFF;          /* Ciano Neon (principal) */
-    --color-secondary: #FF00FF;        /* Magenta Neon (secundário) */
+    --color-background: #0D0D0D;       /* Fundo preto */
+    --color-primary: #FFD700;          /* Dourado Neon (principal) */
+    --color-secondary: #FF8C00;        /* Laranja/Cobre Neon (secundário) */
     --color-match: #00FF00;            /* Verde Neon (acerto) */
-    --color-text: #E0E0FF;             /* Texto claro */
+    --color-text: #F0F0F0;             /* Texto claro */
     --color-shadow: 0 0 10px;          /* Sombra neon padrão */
     --color-card-back: var(--color-secondary);
-    --color-card-back-text: var(--color-text);
-    --color-pokedex-bg: rgba(0, 0, 0, 0.5); /* Opacidade para ver o vídeo */
-    --color-header-bg: rgba(18, 10, 36, 0.95);
+    --color-card-back-text: var(--color-background); /* Texto escuro na carta */
+    --color-pokedex-bg: rgba(0, 0, 0, 0.7); /* Opacidade para ver o vídeo */
+    --color-header-bg: rgba(13, 13, 13, 0.95);
 
     /* CORES LOGO PRINCIPAL */
-    --logo-ball-top: #FF0000;
+    --logo-ball-top: #CC0000;
     --logo-ball-bottom: #FFFFFF;
 
     /* CORES MASTER BALL (Ícone do Dark Mode) */
-    --master-main-color: #581699;       /* Roxo Escuro */
-    --master-secondary-color: #E247E2;  /* Rosa/Magenta (detalhe) */
-    --master-center-ring: #B3F58C;      /* Verde Claro (círculo central) */
+    --master-main-color: #202020;       /* Preto/Cinza Escuro */
+    --master-secondary-color: #FFD700;  /* Dourado Neon (detalhe) */
+    --master-center-ring: #B3F58C;      /* Verde Claro (círculo central) - Mantido para contraste */
     
-    /* CORES POKEBALL (Ícone do Light Mode) */
+    /* CORES POKEBALL (Ícone do Light Mode) - Mantidas Clássicas para contraste */
     --pokeball-top-color: #E60000;      /* Vermelho */
     --pokeball-bottom-color: #F9F9F9;   /* Branco */
     --pokeball-center-ring: #333333;    /* Preto */
 }
 
-/* Tema Claro (Light Mode) */
+/* Tema Claro NOVO (Light Mode) - Azul Bebê, Amarelo e Verde Turquesa */
 body.light-mode {
-    --color-background: #F0F0F0;        
-    --color-primary: #0A66C2;           
-    --color-secondary: #D44E2C;         
-    --color-match: #28A745;             
-    --color-text: #333333;              
+    --color-background: #F0F8FF;        /* Azul Bebê Claro */
+    --color-primary: #87CEEB;           /* Azul Claro/Céu */
+    --color-secondary: #40E0D0;         /* Verde Turquesa */
+    --color-match: #FFEB3B;             /* Amarelo Vibrante (acerto) */
+    --color-text: #333333;              /* Texto escuro */
     --color-shadow: 0 0 5px;            
     --color-card-back: var(--color-primary); 
     --color-card-back-text: #FFFFFF;
     --color-pokedex-bg: rgba(255, 255, 255, 0.9);
-    --color-header-bg: rgba(240, 240, 240, 0.95);
+    --color-header-bg: rgba(240, 248, 255, 0.95);
 
     /* CORES LOGO PRINCIPAL */
     --logo-ball-top: #E60000;
@@ -183,7 +183,7 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Botão Login/Pontuação */
+/* Botão Login/Pontuação - Removido do HTML, mas o estilo é genérico */
 #btn-login-score {
     background: var(--color-primary);
     color: var(--color-background);
@@ -191,7 +191,7 @@ body {
     font-size: 0.9em;
 }
 #btn-login-score:hover {
-    background: #00FFFF;
+    background: var(--color-primary);
     box-shadow: 0 0 20px var(--color-primary);
 }
 
@@ -268,7 +268,7 @@ body {
 
 /* 4.3. ESTILO MASTER BALL (Modo Escuro - Detalhado) */
 .masterball-style {
-    background: var(--master-main-color); /* Roxo Escuro */
+    background: var(--master-main-color); /* Preto/Cinza Escuro */
     border-color: var(--master-main-color); 
 }
 
@@ -283,7 +283,7 @@ body {
     height: 8px;
     border-radius: 50%;
     background: var(--master-center-ring); /* Verde Claro */
-    border: 2px solid var(--master-secondary-color); /* Rosa/Magenta */
+    border: 2px solid var(--master-secondary-color); /* Dourado */
     z-index: 3;
     box-shadow: 0 0 5px var(--master-center-ring);
 }
@@ -296,20 +296,20 @@ body {
     left: 0;
     width: 100%;
     height: 5px; 
-    background: var(--master-secondary-color); /* Rosa/Magenta */
+    background: var(--master-secondary-color); /* Dourado */
     transform: translateY(-50%);
     box-shadow: 0 0 5px var(--master-secondary-color);
     z-index: 2;
 }
 
-/* 🚨 Detalhes Laterais (Garras Magentas) */
+/* 🚨 Detalhes Laterais (Garras Douradas) */
 .masterball-style .master-detail-left,
 .masterball-style .master-detail-right {
     position: absolute;
     top: 50%;
     width: 40%; 
     height: 4px; 
-    background: var(--master-secondary-color); /* Rosa/Magenta */
+    background: var(--master-secondary-color); /* Dourado */
     transform-origin: center center;
     box-shadow: 0 0 3px var(--master-secondary-color);
     z-index: 4;
@@ -363,8 +363,9 @@ button {
 }
 
 button:hover:not(:disabled) {
-    background: #FF55FF; 
-    box-shadow: 0 0 15px #FF55FF;
+    background: var(--color-secondary); 
+    /* Ajuste para um hover mais sutil ou mais vibrante, dependendo do tema */
+    box-shadow: 0 0 15px var(--color-primary); 
 }
 body.light-mode button:hover:not(:disabled) {
     background: var(--color-secondary); 
@@ -409,7 +410,7 @@ button:disabled {
     align-items: center;
     margin-bottom: 20px;
     padding: 10px;
-    background: rgba(0, 255, 255, 0.1);
+    background: rgba(255, 215, 0, 0.1); /* Dourado suave */
     border: 1px solid var(--color-primary);
     border-radius: 5px;
 }
@@ -605,7 +606,7 @@ body.light-mode .pokemon-input-group input {
 }
 
 .spinner {
-    border: 8px solid rgba(0, 255, 255, 0.3);
+    border: 8px solid rgba(255, 215, 0, 0.3); /* Dourado suave */
     border-top: 8px solid var(--color-primary);
     border-radius: 50%;
     width: 60px;
