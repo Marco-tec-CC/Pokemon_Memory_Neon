@@ -17,16 +17,19 @@ export function startGame(region: Region, customPokemonList?: Pokemon[]): Game {
     
     let basePokemonList: Pokemon[];
     
-    if (customPokemonList && customPokemonList.length >= 8) {
-        basePokemonList = customPokemonList.slice(0, 8);
+    // ALTERAÇÃO: Mudar de 8 para 18 Pokémons para jogo personalizado
+    if (customPokemonList && customPokemonList.length >= 18) {
+        basePokemonList = customPokemonList.slice(0, 18); // Limita aos primeiros 18
     } else {
         const regionalList = getPokemonsByRegion(region);
         
-        if (regionalList.length < 8) {
+        // ALTERAÇÃO: Mudar de 8 para 18 na verificação de Pokémons insuficientes
+        if (regionalList.length < 18) {
             throw new Error(`A região ${region} não tem Pokémons suficientes para iniciar o jogo.`);
         }
         
-        basePokemonList = getRandomSample(regionalList, 8);
+        // ALTERAÇÃO: Mudar de 8 para 18 na seleção de amostra aleatória
+        basePokemonList = getRandomSample(regionalList, 18);
     }
 
     const shuffledCards = createDeck(basePokemonList);
@@ -63,18 +66,30 @@ export function checkPair(gameId: string, cardIds: string[]): CheckPairSuccessRe
     
     const match = card1.pokemon === card2.pokemon;
 
+    let message = match ? "Parabéns, é um par!" : "Não é um par, tente novamente.";
+
     if (match) {
         card1.matched = true;
         card2.matched = true;
+        card1.flipped = false; // Reset flip state after match is confirmed
+        card2.flipped = false;
     }
-    
+
+    // A condição de fim de jogo é: todas as cartas estão marcadas como 'matched'
     const isGameOver = game.cards.every(c => c.matched);
     
-    return {
-        match,
-        moves: game.moves,
-        message: match ? 'Par encontrado!' : 'Não é um par.',
+    // Se não for um par, o frontend se encarregará de virar as cartas
+    // Se for um par, as cartas são atualizadas no frontend via 'cards'
+    
+    return { 
+        match, 
+        moves: game.moves, 
+        message, 
         isGameOver,
-        cards: game.cards
+        // Retorna apenas as cartas que foram alteradas no estado (viradas ou combinadas)
+        cards: [card1, card2] 
     };
 }
+
+// Em um jogo real, você teria uma função para limpar jogos antigos
+// export function cleanupGame(id: string): void { delete games[id]; }

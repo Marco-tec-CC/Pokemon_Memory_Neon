@@ -53,23 +53,25 @@ export function getPokemonsByRegion(region: Region): Pokemon[] {
 }
 
 export function createDeck(basePokemonList: Pokemon[]): Card[] {
-    if (basePokemonList.length !== 8) {
-        throw new Error("A lista de Pokémons deve ter exatamente 8 itens para criar o baralho de 16 cartas.");
+    // ALTERAÇÃO: Mudar de 8 para 18 e atualizar a mensagem
+    if (basePokemonList.length !== 18) {
+        throw new Error("A lista de Pokémons deve ter exatamente 18 itens para criar o baralho de 36 cartas.");
     }
     
     const deck: Card[] = [];
     
     basePokemonList.forEach(p => {
         const baseCard = { 
-            pokemon: p.nome,
-            imagem: p.imagem,
-            flipped: false,
-            matched: false
+            pokemon: p.nome, 
+            imagem: p.imagem, 
+            flipped: false, 
+            matched: false 
         };
-
+        
+        // Cria duas cartas para cada Pokémon
         deck.push({ ...baseCard, id: randomUUID() });
         deck.push({ ...baseCard, id: randomUUID() });
     });
-
+    
     return shuffleArray(deck);
 }

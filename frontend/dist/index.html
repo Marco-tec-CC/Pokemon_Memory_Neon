@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Memory Game Neon - Escolha sua Região</title>
+     
+  <link rel="stylesheet" crossorigin href="/assets/index-DLRanWOc.css">
+</head>
+<body>
+    
+    <video autoplay muted loop id="background-video">
+        <source src="/assets/fundo-C5vSA-iU.mp4" type="video/mp4">
+        Seu navegador não suporta a tag de vídeo.
+    </video>
+    <header id="main-header">
+        <div class="logo-area">
+            <div class="pokeball-icon"></div> <h1>POKÉMON MEMORY GAME</h1>
+        </div>
+        
+        <nav class="user-controls">
+            <button id="theme-toggle" aria-label="Alternar Tema Claro/Escuro">
+                <span class="pokeball-icon-toggle pokeball-style icon-light hidden"></span>
+                
+                <span class="pokeball-icon-toggle masterball-style icon-dark">
+                    <span class="master-detail-left"></span>
+                    <span class="master-detail-right"></span>
+                </span>
+            </button> 
+            
+        </nav>
+    </header>
+    <div id="pokedex">
+        
+        <div id="loading-overlay" class="hidden">
+            <div class="spinner"></div>
+            <p>Carregando Jogo...</p>
+        </div>
+        <div id="error-message" class="error-screen hidden">
+            <h2>Ops! Um Erro Ocorreu.</h2>
+            <p>Mensagem de erro aqui.</p>
+            <button class="back-button" id="btn-error-return">&larr; Voltar</button>
+        </div>
+
+
+        <div id="region-selection" class="screen">
+            <h2>Escolha sua Região Pokémon</h2>
+            
+            <div class="region-buttons">
+                <button class="region-button" id="btn-start-kanto" data-region="kanto">Kanto (Geração I)</button>
+                <button class="region-button" id="btn-start-johto" data-region="johto">Johto (Geração II)</button>
+                <button class="region-button" id="btn-start-hoenn" data-region="hoenn">Hoenn (Geração III)</button>
+                <button class="region-button" id="btn-start-sinnoh" data-region="sinnoh">Sinnoh (Geração IV)</button>
+            </div>
+            
+            <hr>
+
+            <button class="create-button" id="btn-show-custom">
+                Criar Jogo Personalizado
+            </button>
+        </div>
+
+        <div id="custom-creation" class="screen hidden">
+            <h2>Criar Pokémons Personalizados</h2>
+            <p>Adicione <strong>18 Pokémons diferentes</strong> (para 36 cartas).</p>
+            
+            <div id="pokemon-inputs-container">
+                </div>
+
+            <button id="btn-add-pokemon">Adicionar Pokémon</button>
+            <button disabled id="start-custom-button">
+                Iniciar Jogo Personalizado (0/18 Pokémons Válidos)
+            </button>
+            
+            <button class="back-button" id="btn-custom-back">&larr; Voltar</button>
+        </div>
+
+        <div id="game-board" class="screen hidden">
+            <div class="game-info">
+                <div class="moves-counter">
+                    Movimentos: <span id="moves">0</span>
+                </div>
+                <button id="restart">Reiniciar</button>
+            </div>
+            <div id="board">
+                </div>
+            
+            <button class="back-button" id="btn-game-back">&larr; Voltar ao Menu</button>
+        </div>
+
+        <div id="win-screen" class="screen hidden">
+            <h2>🎉 Parabéns, Vencedor! 🎉</h2>
+            <p>Você completou o jogo em <strong id="final-moves">0</strong> movimentos.</p>
+            <button class="back-button" id="btn-win-return">&larr; Voltar ao Menu</button>
+        </div>
+    </div>
+    
+    <script src="main.js"></script> 
+</body>
+</html>

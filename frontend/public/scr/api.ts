@@ -3,11 +3,13 @@ import { GameState, Region, PokemonList, CheckPairResult } from './models';
 const BASE_URL = 'http://localhost:3000/game';
 
 
-export async function startNewGameApi(region: Region, customPokemonList?: PokemonList): Promise<GameState> {
+// MODIFICADO: Aceita numberOfPairs e o inclui no corpo da requisição
+export async function startNewGameApi(region: Region, customPokemonList?: PokemonList, numberOfPairs?: number): Promise<GameState> {
     const response = await fetch(`${BASE_URL}/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ region, customPokemonList }),
+        // AGORA INCLUI numberOfPairs para dizer ao backend quantos pares criar
+        body: JSON.stringify({ region, customPokemonList, numberOfPairs }),
     });
 
     if (!response.ok) {

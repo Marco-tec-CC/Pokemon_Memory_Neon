@@ -1,6 +1,6 @@
 import { Card, GameState, CheckPairResult } from './models';
 import { checkPairApi } from './api';
-import { showWinScreen, showError, hideLoading } from './ui';
+import { showWinScreen, showError, hideLoading, stopTimer } from './ui'; // stopTimer incluído
 
 const boardContainer = document.getElementById('board') as HTMLElement;
 const movesDisplay = document.getElementById('moves') as HTMLElement;
@@ -37,101 +37,91 @@ function createCardElement(card: Card): HTMLDivElement {
         </div>
     `;
 
-    if (!card.matched) {
-        cardElement.addEventListener('click', handleCardClick);
-    }
-
+    cardElement.addEventListener('click', handleCardClick);
     return cardElement;
 }
 
 /**
- * Renderiza todas as cartas no tabuleiro com base no estado do jogo.
- * @param cards A lista de cartas a serem renderizadas.
+ * Renderiza o tabuleiro do jogo com base na lista de cartas.
+ * @param cards A lista de cartas a serem exibidas.
  */
 function renderBoard(cards: Card[]): void {
     boardContainer.innerHTML = '';
     
-    // Calcula a classe de layout para garantir responsividade, embora o CSS trate 6x6
-    const numCards = cards.length;
-    let gridClass = 'board-6x6'; // Padrão
-    if (numCards === 16) gridClass = 'board-4x4';
-    if (numCards === 20) gridClass = 'board-4x5';
-    if (numCards === 24) gridClass = 'board-4x6';
-    // Você precisaria adicionar estilos no style.css para essas outras classes de board
+    // MODIFICADO: Lógica de layout dinâmico para os novos tamanhos (8, 16, 32, 72, 144 cartas)
+    const totalCards = cards.length;
+    let columns = 4; // Padrão
 
-    boardContainer.className = ''; // Limpa classes antigas
-    boardContainer.classList.add('board');
-    // boardContainer.classList.add(gridClass); // Descomente se for adicionar layouts dinâmicos no CSS
+    if (totalCards === 8) { // 4 pares
+        columns = 4; // 4x2
+    } else if (totalCards === 16) { // 8 pares
+        columns = 4; // 4x4
+    } else if (totalCards === 32) { // 16 pares
+        columns = 8; // 8x4
+    } else if (totalCards === 72) { // 36 pares
+        columns = 9; // 9x8 (ou 8x9, dependendo do CSS)
+    } else if (totalCards === 144) { // 72 pares
+        columns = 12; // 12x12
+    }
+
+    boardContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+    // FIM MODIFICADO
 
     cards.forEach(card => {
-        const cardElement = createCardElement(card);
-        boardContainer.appendChild(cardElement);
+        boardContainer.appendChild(createCardElement(card));
     });
 }
+
 
 /**
  * Manipula o clique em uma carta.
  * @param event O evento de clique.
  */
 function handleCardClick(event: Event): void {
-    if (lockBoard) return;
+    const cardElement = event.currentTarget as HTMLDivElement;
 
-    const clickedCard = event.currentTarget as HTMLDivElement;
-
-    if (clickedCard.classList.contains('flipped') || clickedCard.classList.contains('matched')) {
+    if (lockBoard || cardElement.classList.contains('matched') || cardElement.classList.contains('flipped')) {
         return;
     }
 
-    clickedCard.classList.add('flipped');
-    revealedCards.push(clickedCard);
+    cardElement.classList.add('flipped');
+    revealedCards.push(cardElement);
 
     if (revealedCards.length === 2) {
         lockBoard = true;
-        checkPair();
+        checkMatch();
     }
 }
 
 /**
- * Envia o par de cartas viradas para o backend e processa o resultado.
+ * Verifica se as duas cartas reveladas correspondem.
  */
-async function checkPair(): Promise<void> {
+async function checkMatch(): Promise<void> {
     const [card1Element, card2Element] = revealedCards;
-
-    // Checagem de segurança, caso algo inesperado aconteça
-    if (!card1Element || !card2Element) {
-        revealedCards = [];
-        lockBoard = false;
-        return;
-    }
-
     const cardIds = [card1Element.dataset.id!, card2Element.dataset.id!];
 
     try {
         const result: CheckPairResult = await checkPairApi(currentGameId, cardIds);
-
+        
         moves = result.moves;
         movesDisplay.textContent = moves.toString();
 
         if (result.match) {
-            // Se houver acerto (Match)
+            // Se for um acerto, adiciona a classe 'matched'
             card1Element.classList.add('matched');
             card2Element.classList.add('matched');
-
-            // Remove o listener para que não possam ser clicadas novamente
-            card1Element.removeEventListener('click', handleCardClick);
-            card2Element.removeEventListener('click', handleCardClick);
             
+            // Remove as classes de feedback temporário se houver (opcional)
+            card1Element.classList.remove('mismatch');
+            card2Element.classList.remove('mismatch');
         } else {
-            // Se não houver acerto (Mismatch)
-            
-            // 💡 NOVO: Adiciona a classe visual de erro (mismatch)
+            // Se for erro, adiciona classe 'mismatch' e depois desvira
             card1Element.classList.add('mismatch');
             card2Element.classList.add('mismatch');
             
-            // Espera 1 segundo com a animação de erro
+            // Espera um momento para o usuário ver o erro
             await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Remove a classe visual de erro e desvira as cartas
+            
             card1Element.classList.remove('mismatch');
             card2Element.classList.remove('mismatch');
             
@@ -143,6 +133,7 @@ async function checkPair(): Promise<void> {
         lockBoard = false;
 
         if (result.isGameOver) {
+            stopTimer(); // NOVO: Para o timer quando o jogo é ganho (match final)
             showWinScreen(moves);
         }
 
@@ -183,11 +174,4 @@ export function resetGameState(): void {
     revealedCards = [];
     lockBoard = false;
     boardContainer.innerHTML = '';
-}
-
-/**
- * Função exportada para resetar o jogo, mantida para compatibilidade com o ui.ts
- */
-export function resetGame(): void {
-    resetGameState();
 }

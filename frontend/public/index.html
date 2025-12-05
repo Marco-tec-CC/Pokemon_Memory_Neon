@@ -47,37 +47,47 @@
         </div>
         
         <div id="region-selection" class="screen">
-            <h2>Seja Bem-Vindo! Escolha uma Região:</h2>
+            <br><br><br><br><br><br><br><br><br><h2>Seja Bem-Vindo! Escolha uma Região:</h2><br><br><br><br><br><br><br>
             <div class="options-container">
-                <button id="btn-start-kanto" data-region="kanto">Kanto (Geração I)</button> 
-                <button id="btn-start-johto" data-region="johto">Johto (Geração II)</button>
-                <button id="btn-start-hoenn" data-region="hoenn">Hoenn (Geração III)</button>
-                <button id="btn-start-sinnoh" data-region="sinnoh">Sinnoh (Geração IV)</button>
-            </div>
+                <button id="btn-start-kanto" data-region="kanto">Kanto (Geração I)</button> <br><br>
+                <button id="btn-start-johto" data-region="johto">Johto (Geração II)</button><br><br>
+                <button id="btn-start-hoenn" data-region="hoenn">Hoenn (Geração III)</button><br><br>
+                <button id="btn-start-sinnoh" data-region="sinnoh">Sinnoh (Geração IV)</button><br><br>
+            </div><br>
             
-            <hr>
+            <hr><br>
 
-            <button class="create-button" id="btn-show-custom">
-                Criar Jogo Personalizado
-            </button>
+            <br><br><br><br><button class="quick-match-button" id="btn-start-quick-match"><br>
+                🎮 Partida Rápida - 4 Pares (3 Minutos)
+            <br><br></button><br><br><br><br>
+
+            <hr><br><br>
+
+           <br> <button class="create-button" id="btn-show-custom"><br>
+                Criar Jogo Personalizado<br>
+            <br></button>
         </div>
 
         <div id="custom-creation" class="screen hidden">
             <h2>Criar Pokémons Personalizados</h2>
-            <p>Adicione <strong>no mínimo 8 Pokémons diferentes</strong> (para 16 cartas).</p>
+            <p>Adicione <strong>no Maximo 8 Pokémons diferentes</strong> (para 16 cartas).</p>
             
             <div id="pokemon-inputs-container">
                 </div>
 
             <button id="btn-add-pokemon">Adicionar Pokémon</button>
             <button disabled id="start-custom-button">
-                Iniciar Jogo Personalizado (0/8 Mínimo)
+                Iniciar Jogo Personalizado (0/8 Maximo)
             </button>
             
             <button class="back-button" id="btn-custom-back">&larr; Voltar</button>
         </div>
 
         <div id="game-board" class="screen hidden">
+            <div id="game-info">
+                <div id="timer-display">Tempo: <strong id="timer-countdown">--:--</strong></div>
+                <div>Movimentos: <strong id="moves">0</strong></div> 
+                </div>
             <div id="board">
                 </div>
             
