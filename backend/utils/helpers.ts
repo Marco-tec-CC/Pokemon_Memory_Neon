@@ -1,3 +1,5 @@
+// src/utils/helpers.ts
+
 import { Card, Pokemon, pokemons as allPokemons, Region } from "../models/gameModel";
 import { randomUUID } from "crypto";
 
@@ -42,20 +44,21 @@ export function getPokemonsByRegion(region: Region): Pokemon[] {
             endIndex = 493;
             break;
         default:
-            throw new Error(`Região desconhecida: ${region}.`);
+            throw new Error(`Região desconhecida: ${region}.`); 
     }
 
     if (endIndex > allPokemons.length) {
-        throw new Error(`Dados de Pokémons insuficientes! Sua lista de Pokémons tem apenas ${allPokemons.length} itens. Para a região ${region} você precisa de pelo menos ${endIndex} Pokémons.`);
+        throw new Error(`Dados de Pokémons insuficientes! Sua lista de Pokémons tem apenas ${allPokemons.length} itens.`);
     }
 
     return allPokemons.slice(startIndex, endIndex);
 }
 
+// CRÍTICO: Função createDeck flexível - aceita a lista de 8 Pokémons sem erro
 export function createDeck(basePokemonList: Pokemon[]): Card[] {
-    // ALTERAÇÃO: Mudar de 8 para 18 e atualizar a mensagem
-    if (basePokemonList.length !== 18) {
-        throw new Error("A lista de Pokémons deve ter exatamente 18 itens para criar o baralho de 36 cartas.");
+    
+    if (basePokemonList.length === 0) {
+        throw new Error("A lista de Pokémons para criar o baralho não pode estar vazia.");
     }
     
     const deck: Card[] = [];
@@ -63,15 +66,16 @@ export function createDeck(basePokemonList: Pokemon[]): Card[] {
     basePokemonList.forEach(p => {
         const baseCard = { 
             pokemon: p.nome, 
-            imagem: p.imagem, 
+            imagem: p.imagem,
             flipped: false, 
-            matched: false 
+            matched: false,
         };
         
-        // Cria duas cartas para cada Pokémon
-        deck.push({ ...baseCard, id: randomUUID() });
-        deck.push({ ...baseCard, id: randomUUID() });
+        // Cria 2 cartas (o par) para cada Pokémon fornecido
+        deck.push({ ...baseCard, id: randomUUID() }); 
+        deck.push({ ...baseCard, id: randomUUID() }); 
     });
-    
+
+    // Embaralha o deck
     return shuffleArray(deck);
 }

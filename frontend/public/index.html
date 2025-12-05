@@ -42,42 +42,33 @@
         </div>
 
         <div id="panel" class="hidden"> 
-            <span>Movimentos: <span id="moves">0</span></span>
             <button id="restart">REINICIAR</button> 
         </div>
         
         <div id="region-selection" class="screen">
-            <br><br><br><br><br><br><br><br><br><h2>Seja Bem-Vindo! Escolha uma Região:</h2><br><br><br><br><br><br><br>
+            <h2>Seja Bem-Vindo! Escolha uma Região:</h2>
             <div class="options-container">
-                <button id="btn-start-kanto" data-region="kanto">Kanto (Geração I)</button> <br><br>
-                <button id="btn-start-johto" data-region="johto">Johto (Geração II)</button><br><br>
-                <button id="btn-start-hoenn" data-region="hoenn">Hoenn (Geração III)</button><br><br>
-                <button id="btn-start-sinnoh" data-region="sinnoh">Sinnoh (Geração IV)</button><br><br>
-            </div><br>
-            
-            <hr><br>
-
-            <br><br><br><br><button class="quick-match-button" id="btn-start-quick-match"><br>
-                🎮 Partida Rápida - 4 Pares (3 Minutos)
-            <br><br></button><br><br><br><br>
-
-            <hr><br><br>
-
-           <br> <button class="create-button" id="btn-show-custom"><br>
-                Criar Jogo Personalizado<br>
-            <br></button>
+                <button id="btn-start-kanto" data-region="kanto">Kanto (Geração I)</button>
+                <button id="btn-start-johto" data-region="johto">Johto (Geração II)</button>
+                <button id="btn-start-hoenn" data-region="hoenn">Hoenn (Geração III)</button>
+                <button id="btn-start-sinnoh" data-region="sinnoh">Sinnoh (Geração IV)</button>
+            </div>
+            <div class="options-container">
+                <button id="btn-quick-match" class="mode-button">Partida Rápida (8 cartas / 3m)</button>
+                <button id="btn-custom-mode" class="mode-button">Criar Jogo Personalizado</button>
+            </div>
         </div>
 
         <div id="custom-creation" class="screen hidden">
             <h2>Criar Pokémons Personalizados</h2>
-            <p>Adicione <strong>no Maximo 8 Pokémons diferentes</strong> (para 16 cartas).</p>
+            <p>Adicione <strong>8 Pokémons diferentes</strong> (para 16 cartas). Use URLs de imagens HTTPS.</p>
             
             <div id="pokemon-inputs-container">
-                </div>
+            </div>
 
-            <button id="btn-add-pokemon">Adicionar Pokémon</button>
+            <button id="btn-add-pokemon" disabled>Adicionar Pokémon</button>
             <button disabled id="start-custom-button">
-                Iniciar Jogo Personalizado (0/8 Maximo)
+                Iniciar Jogo Personalizado (8/8 Mínimo)
             </button>
             
             <button class="back-button" id="btn-custom-back">&larr; Voltar</button>
@@ -85,11 +76,12 @@
 
         <div id="game-board" class="screen hidden">
             <div id="game-info">
+                <div id="stage-display" class="hidden">Fase: <strong id="current-stage">1/1 (0 Pares)</strong></div>
                 <div id="timer-display">Tempo: <strong id="timer-countdown">--:--</strong></div>
                 <div>Movimentos: <strong id="moves">0</strong></div> 
-                </div>
+            </div>
             <div id="board">
-                </div>
+            </div>
             
             <button class="back-button" id="btn-game-back">&larr; Voltar ao Menu</button>
         </div>
@@ -97,11 +89,10 @@
         <div id="win-screen" class="screen hidden">
             <h2>🎉 Parabéns, Vencedor! 🎉</h2>
             <p>Você completou o jogo em <strong id="final-moves">0</strong> movimentos.</p>
-            <button id="btn-win-return">Jogar Novamente</button>
+            <button id="btn-win-return">Voltar ao Menu</button>
         </div>
-
     </div>
     
-    <script type="module" src="./scr/main.ts"></script>
+    <script type="module" src="scr/main.ts"></script>
 </body>
 </html>

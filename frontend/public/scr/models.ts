@@ -6,7 +6,6 @@ export interface Pokemon {
     imagem: string;
 }
 
-
 export type PokemonList = Pokemon[];
 
 export interface Card {

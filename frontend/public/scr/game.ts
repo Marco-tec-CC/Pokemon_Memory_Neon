@@ -1,6 +1,7 @@
+// src/game.ts
 import { Card, GameState, CheckPairResult } from './models';
 import { checkPairApi } from './api';
-import { showWinScreen, showError, hideLoading, stopTimer } from './ui'; // stopTimer incluído
+import { showWinScreen, showError, hideLoading, stopTimer } from './ui'; 
 
 const boardContainer = document.getElementById('board') as HTMLElement;
 const movesDisplay = document.getElementById('moves') as HTMLElement;
@@ -23,7 +24,8 @@ function createCardElement(card: Card): HTMLDivElement {
     // Garante que cartas já combinadas ou viradas por estado de backend sejam renderizadas corretamente
     if (card.matched) {
         cardElement.classList.add('matched');
-        cardElement.classList.add('flipped');
+        // CRÍTICO: Cartas 'matched' devem sempre ter 'flipped' para mostrar a face
+        cardElement.classList.add('flipped'); 
     } else if (card.flipped) {
         cardElement.classList.add('flipped');
     }
@@ -48,7 +50,7 @@ function createCardElement(card: Card): HTMLDivElement {
 function renderBoard(cards: Card[]): void {
     boardContainer.innerHTML = '';
     
-    // MODIFICADO: Lógica de layout dinâmico para os novos tamanhos (8, 16, 32, 72, 144 cartas)
+    // Lógica de layout dinâmico para os novos tamanhos
     const totalCards = cards.length;
     let columns = 4; // Padrão
 
@@ -80,6 +82,7 @@ function renderBoard(cards: Card[]): void {
 function handleCardClick(event: Event): void {
     const cardElement = event.currentTarget as HTMLDivElement;
 
+    // Não permite clique se o tabuleiro estiver travado, carta já combinada ou já virada
     if (lockBoard || cardElement.classList.contains('matched') || cardElement.classList.contains('flipped')) {
         return;
     }
@@ -111,17 +114,24 @@ async function checkMatch(): Promise<void> {
             card1Element.classList.add('matched');
             card2Element.classList.add('matched');
             
-            // Remove as classes de feedback temporário se houver (opcional)
+            // CORREÇÃO CRÍTICA: MANTENHA A CLASSE 'flipped' AQUI! 
+            // Apenas remova a classe temporária de erro.
             card1Element.classList.remove('mismatch');
             card2Element.classList.remove('mismatch');
+            
+            // As duas linhas abaixo FORAM REMOVIDAS para corrigir o erro:
+            // card1Element.classList.remove('flipped'); 
+            // card2Element.classList.remove('flipped');
+
         } else {
-            // Se for erro, adiciona classe 'mismatch' e depois desvira
+            // Se for erro, adiciona classe 'mismatch'
             card1Element.classList.add('mismatch');
             card2Element.classList.add('mismatch');
             
             // Espera um momento para o usuário ver o erro
             await new Promise(resolve => setTimeout(resolve, 1000));
             
+            // Remove classes de feedback e DESVIRA (remove 'flipped')
             card1Element.classList.remove('mismatch');
             card2Element.classList.remove('mismatch');
             
@@ -129,11 +139,12 @@ async function checkMatch(): Promise<void> {
             card2Element.classList.remove('flipped');
         }
 
+        // FIM DA JOGADA
         revealedCards = [];
-        lockBoard = false;
+        lockBoard = false; // Desbloqueia o tabuleiro para a próxima jogada
 
         if (result.isGameOver) {
-            stopTimer(); // NOVO: Para o timer quando o jogo é ganho (match final)
+            stopTimer(); 
             showWinScreen(moves);
         }
 
@@ -141,7 +152,7 @@ async function checkMatch(): Promise<void> {
         console.error("Erro na jogada:", error);
         showError('Erro de comunicação com o servidor durante a jogada.');
 
-        // Garante que as cartas desvirem em caso de erro de API
+        // Garante que as cartas desvirem e o jogo continue em caso de erro de API
         card1Element?.classList.remove('flipped');
         card2Element?.classList.remove('flipped');
 

@@ -1,3 +1,5 @@
+// src/services/gameService.ts
+
 import { randomUUID } from "crypto";
 import { Card, Game, Region, Pokemon } from "../models/gameModel";
 import { createDeck, getPokemonsByRegion, getRandomSample } from "../utils/helpers";
@@ -12,43 +14,56 @@ type CheckPairSuccessResult = {
     cards: Card[];
 };
 
-export function startGame(region: Region, customPokemonList?: Pokemon[]): Game { 
+type CheckPairErrorResult = {
+    error: string;
+};
+
+
+// CRÍTICO: O parâmetro numberOfPairs é recebido e usado.
+export function startGame(region: Region, customPokemonList?: Pokemon[], numberOfPairs: number = 8): Game { 
     const id = randomUUID();
     
     let basePokemonList: Pokemon[];
     
-    // ALTERAÇÃO: Mudar de 8 para 18 Pokémons para jogo personalizado
-    if (customPokemonList && customPokemonList.length >= 18) {
-        basePokemonList = customPokemonList.slice(0, 18); // Limita aos primeiros 18
+    if (region === 'custom') {
+        // Se custom, usa customPokemonList
+        if (!customPokemonList || customPokemonList.length < numberOfPairs) {
+            throw new Error(`O modo personalizado requer pelo menos ${numberOfPairs} Pokémons.`);
+        }
+        // Limita a lista ao número de pares (8)
+        basePokemonList = customPokemonList.slice(0, numberOfPairs); 
+
     } else {
-        const regionalList = getPokemonsByRegion(region);
+        // Lógica para regiões padrão (kanto, johto, etc.)
+        const regionalList = getPokemonsByRegion(region); 
         
-        // ALTERAÇÃO: Mudar de 8 para 18 na verificação de Pokémons insuficientes
-        if (regionalList.length < 18) {
-            throw new Error(`A região ${region} não tem Pokémons suficientes para iniciar o jogo.`);
+        if (regionalList.length < numberOfPairs) {
+            throw new Error(`A região ${region} não tem Pokémons suficientes (${regionalList.length}) para criar ${numberOfPairs} pares.`);
         }
         
-        // ALTERAÇÃO: Mudar de 8 para 18 na seleção de amostra aleatória
-        basePokemonList = getRandomSample(regionalList, 18);
+        basePokemonList = getRandomSample(regionalList, numberOfPairs);
     }
 
+    // Cria o deck com base na lista de Pokémons selecionada (8)
     const shuffledCards = createDeck(basePokemonList);
-    
-    const newGame: Game = { 
-        id, 
+
+    const newGame: Game = {
+        id,
         cards: shuffledCards,
-        moves: 0 
+        moves: 0,
     };
     
     games[id] = newGame;
-    return newGame; 
+    
+    return newGame;
 }
 
-export function getGameState(id: string): Game | null {
-    return games[id] || null;
+export function getGameState(id: string): Game | undefined {
+    return games[id];
 }
 
-export function checkPair(gameId: string, cardIds: string[]): CheckPairSuccessResult | { error: string } {
+
+export function checkPair(gameId: string, cardIds: string[]): CheckPairSuccessResult | CheckPairErrorResult {
     const game = games[gameId];
     if (!game) return { error: "Jogo não encontrado" };
     
@@ -71,25 +86,17 @@ export function checkPair(gameId: string, cardIds: string[]): CheckPairSuccessRe
     if (match) {
         card1.matched = true;
         card2.matched = true;
-        card1.flipped = false; // Reset flip state after match is confirmed
+        card1.flipped = false; 
         card2.flipped = false;
     }
 
-    // A condição de fim de jogo é: todas as cartas estão marcadas como 'matched'
     const isGameOver = game.cards.every(c => c.matched);
     
-    // Se não for um par, o frontend se encarregará de virar as cartas
-    // Se for um par, as cartas são atualizadas no frontend via 'cards'
-    
-    return { 
-        match, 
-        moves: game.moves, 
-        message, 
+    return {
+        match,
+        moves: game.moves,
+        message,
         isGameOver,
-        // Retorna apenas as cartas que foram alteradas no estado (viradas ou combinadas)
-        cards: [card1, card2] 
+        cards: game.cards,
     };
 }
-
-// Em um jogo real, você teria uma função para limpar jogos antigos
-// export function cleanupGame(id: string): void { delete games[id]; }
