@@ -27,6 +27,32 @@ const MAX_CUSTOM_POKEMON = 8;
 let currentRegion: Region = 'kanto'; 
 let customPokemonList: PokemonList = []; 
 
+// NOVO: Variáveis e Funções para Tema
+const bodyElement = document.body as HTMLBodyElement;
+const themeToggleButton = document.getElementById('theme-toggle') as HTMLButtonElement;
+const iconDark = themeToggleButton?.querySelector('.icon-dark') as HTMLSpanElement;
+const iconLight = themeToggleButton?.querySelector('.icon-light') as HTMLSpanElement;
+
+function applyTheme(isLight: boolean): void {
+    if (isLight) {
+        bodyElement.classList.add('light-mode');
+        localStorage.setItem('theme', 'light');
+        iconDark.classList.add('hidden');
+        iconLight.classList.remove('hidden');
+    } else {
+        bodyElement.classList.remove('light-mode');
+        localStorage.setItem('theme', 'dark');
+        iconDark.classList.remove('hidden');
+        iconLight.classList.add('hidden');
+    }
+}
+
+function toggleTheme(): void {
+    const isLightMode = bodyElement.classList.contains('light-mode');
+    applyTheme(!isLightMode);
+}
+// FIM NOVO: Tema
+
 
 export function showScreen(screenName: 'selection' | 'custom' | 'game' | 'win'): void {
 
@@ -128,6 +154,7 @@ export function resetGame(): void {
 export function showCreateScreen(): void {
     showScreen('custom');
     if (customPokemonList.length === 0) {
+        // Inicializa com todos os slots vazios para facilitar a UX
         for (let i = 0; i < MAX_CUSTOM_POKEMON; i++) {
             addPokemonInput(false); 
         }
@@ -168,14 +195,33 @@ export function updateCustomPokemon(index: number, field: keyof Pokemon, value: 
     const pokemon = customPokemonList[index];
     if (pokemon) {
         (pokemon[field] as string) = value; 
+        
+        // 💡 MELHORIA: ATUALIZAÇÃO DA PRÉ-VISUALIZAÇÃO DA IMAGEM
+        if (field === 'imagem') {
+            const imgElement = document.querySelector(`.preview-img[data-index="${index}"]`) as HTMLImageElement;
+            if (imgElement) {
+                const url = value.trim();
+                imgElement.src = url;
+                if (url && isValidUrl(url)) {
+                    // Adiciona listeners para erro de carregamento para feedback visual
+                    imgElement.onload = () => imgElement.classList.remove('error');
+                    imgElement.onerror = () => imgElement.classList.add('error');
+                    imgElement.classList.remove('error'); // Assume correto até falhar
+                } else {
+                    imgElement.src = '';
+                    imgElement.classList.add('error');
+                }
+            }
+        }
+        
         updateCustomButtonState();
     }
 }
 
 function isValidUrl(url: string): boolean {
     try {
-        new URL(url);
-        return true;
+        // Verifica se a URL começa com http(s)://
+        return /^https?:\/\/.+/.test(url);
     } catch (e) {
         return false;
     }
@@ -191,19 +237,28 @@ function checkCustomInputs(): boolean {
 }
 
 function updateCustomButtonState(): void {
-    const validCount = customPokemonList.length;
-    const isReady = validCount === MAX_CUSTOM_POKEMON && checkCustomInputs();
+    const validCount = customPokemonList.filter(p => p.nome.trim() !== '' || p.imagem.trim() !== '').length;
+    const isReady = customPokemonList.length === MAX_CUSTOM_POKEMON && checkCustomInputs();
     
     startCustomButton.disabled = !isReady;
     startCustomButton.textContent = isReady 
         ? 'Iniciar Jogo Personalizado' 
         : `Iniciar Jogo Personalizado (${validCount}/${MAX_CUSTOM_POKEMON})`;
+    
+    // Desabilita botão de adicionar se o máximo for atingido
+    const addButton = document.getElementById('btn-add-pokemon') as HTMLButtonElement;
+    if (addButton) {
+        addButton.disabled = customPokemonList.length >= MAX_CUSTOM_POKEMON;
+    }
 }
 
 export function renderCustomInputs(): void {
     pokemonInputsContainer.innerHTML = '';
     
     customPokemonList.forEach((p, i) => {
+        const isUrlValid = p.imagem.trim() !== '' && isValidUrl(p.imagem);
+        const errorClass = !isUrlValid ? 'error' : '';
+
         const htmlGroup = document.createElement('div');
         htmlGroup.classList.add('pokemon-input-group');
         htmlGroup.innerHTML = `
@@ -221,13 +276,17 @@ export function renderCustomInputs(): void {
                 data-index="${i}"
                 data-field="imagem"
             >
+            <img class="preview-img ${errorClass}" data-index="${i}" src="${p.imagem}" alt="Preview" 
+                 onerror="this.classList.add('error'); this.src='';" 
+                 onload="this.classList.remove('error')" 
+            /> 
             <button class="remove-button" data-index="${i}">
-                ${customPokemonList.length === 1 ? '🚫' : '➖'}
+                ${customPokemonList.length <= 8 ? '➖' : '🚫'}
             </button>
         `;
         
         const removeButton = htmlGroup.querySelector('.remove-button') as HTMLButtonElement;
-        removeButton.disabled = customPokemonList.length === 1;
+        removeButton.disabled = customPokemonList.length === 1; // Nunca deixa zerar a lista
 
         pokemonInputsContainer.appendChild(htmlGroup);
     });
@@ -258,6 +317,9 @@ function attachEventListeners(): void {
 
 
     document.getElementById('restart')?.addEventListener('click', restartCurrentGame); 
+    
+    // NOVO: Listener para o botão de tema
+    themeToggleButton?.addEventListener('click', toggleTheme);
 }
 
 function attachCustomInputListeners(): void {
@@ -279,6 +341,13 @@ function attachCustomInputListeners(): void {
 }
 
 export function initializeUI(): void {
+    // NOVO: Carregar tema salvo ou padrão (Dark)
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Se não houver tema salvo, usa o Dark se for preferência do sistema, senão usa o Light como padrão alternativo.
+    const initialLightMode = savedTheme ? savedTheme === 'light' : !prefersDark;
+    applyTheme(initialLightMode);
+    
     showScreen('selection');
     attachEventListeners(); 
     renderCustomInputs(); 

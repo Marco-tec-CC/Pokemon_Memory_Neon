@@ -1,13 +1,85 @@
+/* ================================================= */
+/* 1. Definições de Variáveis e Temas */
+/* ================================================= */
+
+/* Início: Tema Escuro Padrão (Dark Mode) */
 :root {
-    --color-background: #120A24;    
-    --color-primary: #00FFFF;       
-    --color-secondary: #FF00FF;     
-    --color-match: #00FF00;         
-    --color-text: #E0E0FF;          
-    --color-shadow: 0 0 10px;       
+    --color-background: #120A24;       /* Fundo escuro roxo (fallback) */
+    --color-primary: #00FFFF;          /* Ciano Neon (principal) */
+    --color-secondary: #FF00FF;        /* Magenta Neon (secundário) */
+    --color-match: #00FF00;            /* Verde Neon (acerto) */
+    --color-text: #E0E0FF;             /* Texto claro */
+    --color-shadow: 0 0 10px;          /* Sombra neon padrão */
+    --color-card-back: var(--color-secondary);
+    --color-card-back-text: var(--color-text);
+    --color-pokedex-bg: rgba(0, 0, 0, 0.5); /* Opacidade para ver o vídeo */
+    --color-header-bg: rgba(18, 10, 36, 0.95);
+
+    /* CORES LOGO PRINCIPAL */
+    --logo-ball-top: #FF0000;
+    --logo-ball-bottom: #FFFFFF;
+
+    /* CORES MASTER BALL (Ícone do Dark Mode) */
+    --master-main-color: #581699;       /* Roxo Escuro */
+    --master-secondary-color: #E247E2;  /* Rosa/Magenta (detalhe) */
+    --master-center-ring: #B3F58C;      /* Verde Claro (círculo central) */
+    
+    /* CORES POKEBALL (Ícone do Light Mode) */
+    --pokeball-top-color: #E60000;      /* Vermelho */
+    --pokeball-bottom-color: #F9F9F9;   /* Branco */
+    --pokeball-center-ring: #333333;    /* Preto */
+}
+
+/* Tema Claro (Light Mode) */
+body.light-mode {
+    --color-background: #F0F0F0;        
+    --color-primary: #0A66C2;           
+    --color-secondary: #D44E2C;         
+    --color-match: #28A745;             
+    --color-text: #333333;              
+    --color-shadow: 0 0 5px;            
+    --color-card-back: var(--color-primary); 
+    --color-card-back-text: #FFFFFF;
+    --color-pokedex-bg: rgba(255, 255, 255, 0.9);
+    --color-header-bg: rgba(240, 240, 240, 0.95);
+
+    /* CORES LOGO PRINCIPAL */
+    --logo-ball-top: #E60000;
+    --logo-ball-bottom: #F9F9F9;
+
+    /* CORES POKEBALL (Ícone do Light Mode) */
+    --pokeball-top-color: #E60000;
+    --pokeball-bottom-color: #F9F9F9;
+    --pokeball-center-ring: #333333;
 }
 
 
+/* --- NOVO: Fundo de Vídeo (Pixel Art) --- */
+#background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* Garante que o vídeo cubra 100% da viewport */
+    min-width: 100vw;
+    min-height: 100vh;
+    width: auto;
+    height: auto;
+    z-index: -1; /* Fica atrás de todos os elementos */
+    object-fit: cover; /* Garante que o vídeo preencha sem distorcer */
+    
+    /* Escurece e suaviza o vídeo no modo escuro para melhor legibilidade */
+    filter: brightness(0.6) grayscale(0.2); 
+    transition: filter 0.3s;
+}
+
+/* Ajuste no modo claro: aumenta o brilho, mas mantém um pouco de filtro */
+body.light-mode #background-video {
+    filter: brightness(0.8) grayscale(0.1); 
+}
+
+/* ================================================= */
+/* 2. Estilos Globais e Layout Base */
+/* ================================================= */
 
 * {
     box-sizing: border-box;
@@ -24,32 +96,250 @@ body {
     color: var(--color-text);
     display: flex;
     justify-content: center;
-    align-items: flex-start; 
-    padding-top: 50px;
+    padding-top: 100px; 
     padding-bottom: 50px;
+    transition: background 0.3s; 
 }
 
 .hidden {
     display: none !important;
 }
 
+/* ================================================= */
+/* 3. Estilos do Cabeçalho (Header Fixo) */
+/* ================================================= */
+
+#main-header {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px; 
+    background: var(--color-header-bg);
+    border-bottom: 2px solid var(--color-primary);
+    box-shadow: 0 0 15px var(--color-primary);
+    backdrop-filter: blur(5px); 
+    z-index: 100; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#main-header h1 {
+    font-size: 1.8em;
+    color: var(--color-primary);
+    text-shadow: var(--color-shadow) var(--color-primary);
+    margin: 0; 
+    transition: color 0.3s, text-shadow 0.3s;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Ícone de Logo Principal (Pokebola) */
+.pokeball-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--logo-ball-bottom);
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid var(--color-text);
+    box-shadow: var(--color-shadow) var(--logo-ball-top);
+    animation: rotate-pokeball 8s linear infinite; 
+}
+.pokeball-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: var(--logo-ball-top);
+}
+.pokeball-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--color-text);
+    transform: translateY(-50%);
+    box-shadow: 0 0 5px var(--color-text);
+}
+@keyframes rotate-pokeball {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Botão Login/Pontuação */
+#btn-login-score {
+    background: var(--color-primary);
+    color: var(--color-background);
+    box-shadow: var(--color-shadow) var(--color-primary);
+    font-size: 0.9em;
+}
+#btn-login-score:hover {
+    background: #00FFFF;
+    box-shadow: 0 0 20px var(--color-primary);
+}
+
+
+/* --- Estilos do Toggle de Tema (Pokéballs) --- */
+#theme-toggle {
+    position: relative; 
+    background: none;
+    border: none;
+    padding: 0; 
+    width: 36px; 
+    height: 36px;
+    cursor: pointer;
+    box-shadow: none;
+}
+#theme-toggle:hover:not(:disabled) {
+    background: none;
+    box-shadow: none;
+}
+
+.pokeball-icon-toggle {
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-text);
+    box-shadow: 0 0 5px var(--color-primary); 
+    transition: all 0.3s;
+}
+.pokeball-icon-toggle:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* 4.2. ESTILO POKEBALL (Modo Claro - Vermelho e Branco) */
+.pokeball-style {
+    background: var(--pokeball-bottom-color); /* Branco (Metade inferior) */
+    border-color: var(--pokeball-center-ring); /* Borda preta */
+}
+
+/* Metade Superior (Vermelha) + Linha Central Preta - Usando ::before (Z-index 1) */
+.pokeball-style::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: var(--pokeball-top-color); /* Vermelho */
+    /* Linha divisória preta */
+    border-bottom: 3px solid var(--pokeball-center-ring); 
+    z-index: 1;
+}
+
+/* Bolinha Central da Pokéball - Usando ::after (Z-index 3) */
+.pokeball-style::after {
+    content: ''; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--pokeball-center-ring); /* Preto */
+    border: 3px solid var(--pokeball-bottom-color); /* Anel branco */
+    z-index: 3;
+    box-shadow: 0 0 5px var(--pokeball-center-ring);
+}
+
+
+/* 4.3. ESTILO MASTER BALL (Modo Escuro - Detalhado) */
+.masterball-style {
+    background: var(--master-main-color); /* Roxo Escuro */
+    border-color: var(--master-main-color); 
+}
+
+/* Bolinha Central da Master Ball - Usando ::before (Z-index 3) */
+.masterball-style::before {
+    content: ''; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--master-center-ring); /* Verde Claro */
+    border: 2px solid var(--master-secondary-color); /* Rosa/Magenta */
+    z-index: 3;
+    box-shadow: 0 0 5px var(--master-center-ring);
+}
+
+/* Detalhe da Listra Central - Usando ::after (Z-index 2) */
+.masterball-style::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 5px; 
+    background: var(--master-secondary-color); /* Rosa/Magenta */
+    transform: translateY(-50%);
+    box-shadow: 0 0 5px var(--master-secondary-color);
+    z-index: 2;
+}
+
+/* 🚨 Detalhes Laterais (Garras Magentas) */
+.masterball-style .master-detail-left,
+.masterball-style .master-detail-right {
+    position: absolute;
+    top: 50%;
+    width: 40%; 
+    height: 4px; 
+    background: var(--master-secondary-color); /* Rosa/Magenta */
+    transform-origin: center center;
+    box-shadow: 0 0 3px var(--master-secondary-color);
+    z-index: 4;
+}
+
+.masterball-style .master-detail-left {
+    left: -20%; 
+    transform: translateY(-50%) rotate(45deg); 
+}
+
+.masterball-style .master-detail-right {
+    right: -20%; 
+    transform: translateY(-50%) rotate(-45deg); 
+}
+
+
+/* ================================================= */
+/* 5. Estilos da Área Principal (Pokedex) */
+/* ================================================= */
 
 #pokedex {
     width: 90%;
     max-width: 800px;
-    background: rgba(0, 0, 0, 0.5); 
+    background: var(--color-pokedex-bg); 
     border: 2px solid var(--color-primary);
     box-shadow: var(--color-shadow) var(--color-secondary);
     border-radius: 15px;
     padding: 20px;
     text-align: center;
-}
-
-h1 {
-    font-size: 2.5em;
-    color: var(--color-primary);
-    text-shadow: var(--color-shadow) var(--color-primary);
-    margin-bottom: 20px;
+    transition: background 0.3s, border-color 0.3s;
 }
 
 h2 {
@@ -58,6 +348,7 @@ h2 {
     margin-bottom: 20px;
 }
 
+/* Estilos de Botões Padrão */
 button {
     background: var(--color-secondary);
     color: var(--color-text);
@@ -72,8 +363,12 @@ button {
 }
 
 button:hover:not(:disabled) {
-    background: #FF55FF; /* Magenta mais claro */
+    background: #FF55FF; 
     box-shadow: 0 0 15px #FF55FF;
+}
+body.light-mode button:hover:not(:disabled) {
+    background: var(--color-secondary); 
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 button:disabled {
@@ -107,6 +402,7 @@ button:disabled {
     box-shadow: 0 0 5px var(--color-text);
 }
 
+/* Painel de Movimentos */
 #panel {
     display: flex;
     justify-content: space-between;
@@ -123,6 +419,9 @@ button:disabled {
     font-size: 1.2em;
 }
 
+/* ================================================= */
+/* 6. Estilos do Tabuleiro (Game Board) */
+/* ================================================= */
 
 #board {
     display: grid;
@@ -182,8 +481,8 @@ button:disabled {
 }
 
 .card-back {
-    background: var(--color-secondary);
-    color: var(--color-text);
+    background: var(--color-card-back); 
+    color: var(--color-card-back-text); 
     border: 1px solid var(--color-secondary);
 }
 .pokemon-logo {
@@ -192,14 +491,54 @@ button:disabled {
     text-shadow: var(--color-shadow) var(--color-primary);
 }
 
+/* Feedback de Acerto */
 .card.matched {
     cursor: default;
     border-color: var(--color-match);
+    animation: match-pulse 0.5s ease-out 1;
     box-shadow: 0 0 15px var(--color-match);
 }
 .card.matched .card-back {
-    
     display: none; 
+}
+
+/* Feedback de Erro */
+.card.mismatch {
+    border-color: red;
+    box-shadow: 0 0 15px red;
+    animation: mismatch-shake 0.4s ease-in-out;
+}
+
+/* Definição das animações */
+@keyframes match-pulse {
+    0% { transform: scale(1); box-shadow: 0 0 5px var(--color-match); }
+    50% { transform: scale(1.05); box-shadow: 0 0 25px var(--color-match); }
+    100% { transform: scale(1); box-shadow: 0 0 15px var(--color-match); }
+}
+
+@keyframes mismatch-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* ================================================= */
+/* 7. Estilos da Criação Personalizada */
+/* ================================================= */
+
+.pokemon-input-group .preview-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px;
+    flex-shrink: 0;
+}
+.pokemon-input-group .preview-img.error {
+    border-color: red;
+    opacity: 0.5;
 }
 
 
@@ -223,9 +562,15 @@ button:disabled {
     border: 1px solid var(--color-primary);
     background: rgba(0, 0, 0, 0.5);
     color: var(--color-text);
-    border-radius: 4px;
+    border-radius: 44px;
     font-family: 'Consolas', monospace;
 }
+body.light-mode .pokemon-input-group input {
+    background: #fff;
+    color: var(--color-text);
+    border-color: var(--color-primary);
+}
+
 
 .pokemon-input-group .remove-button {
     padding: 8px;
@@ -238,6 +583,9 @@ button:disabled {
     background: red;
 }
 
+/* ================================================= */
+/* 8. Estilos de Feedback (Loading/Erro/Vitória) */
+/* ================================================= */
 
 #loading-overlay {
     position: fixed;
@@ -302,10 +650,27 @@ button:disabled {
 }
 
 
+/* ================================================= */
+/* 9. Media Queries (Responsividade) */
+/* ================================================= */
 
 @media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+    #main-header {
+        height: 60px;
+        padding: 0 10px;
+    }
+    #main-header h1 {
+        font-size: 1.4em;
+    }
+    .pokeball-icon {
+        width: 30px;
+        height: 30px;
+    }
+    
     #board {
-       
         grid-template-columns: repeat(4, 1fr); 
     }
     .pokemon-input-group {
@@ -314,14 +679,18 @@ button:disabled {
     .pokemon-input-group input {
         width: 100%;
     }
+    #theme-toggle {
+        width: 32px; 
+        height: 32px;
+    }
+    .pokeball-icon-toggle {
+        width: 28px;
+        height: 28px;
+    }
 }
 
 @media (max-width: 480px) {
-    h1 {
-        font-size: 1.8em;
-    }
     #board {
-        /* Reduz para 3 colunas em celulares */
         grid-template-columns: repeat(3, 1fr); 
         gap: 8px;
     }
@@ -330,5 +699,12 @@ button:disabled {
     }
     .options-container button {
         flex: 1 1 100%;
+    }
+    #main-header h1 {
+        font-size: 1.2em;
+    }
+    #btn-login-score {
+        padding: 5px 10px;
+        font-size: 0.8em;
     }
 }

@@ -8,9 +8,30 @@
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
+    
+    <video autoplay muted loop id="background-video">
+        <source src="fundo.mp4" type="video/mp4">
+        Seu navegador não suporta a tag de vídeo.
+    </video>
+    <header id="main-header">
+        <div class="logo-area">
+            <div class="pokeball-icon"></div> <h1>POKÉMON MEMORY GAME</h1>
+        </div>
+        
+        <nav class="user-controls">
+            <button id="theme-toggle" aria-label="Alternar Tema Claro/Escuro">
+                <span class="pokeball-icon-toggle pokeball-style icon-light hidden"></span>
+                
+                <span class="pokeball-icon-toggle masterball-style icon-dark">
+                    <span class="master-detail-left"></span>
+                    <span class="master-detail-right"></span>
+                </span>
+            </button> 
+            
+        </nav>
+    </header>
     <div id="pokedex">
-        <h1>POKÉMON MEMORY GAME</h1>
-
+        
         <div id="loading-overlay" class="hidden">
             <div class="spinner"></div>
             <p id="loading-message">Carregando Pokémons...</p>
