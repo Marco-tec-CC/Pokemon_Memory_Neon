@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Memory Game Neon - Escolha sua Região</title>
+    
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+    <div id="pokedex">
+        <h1>POKÉMON MEMORY GAME</h1>
+
+        <div id="loading-overlay" class="hidden">
+            <div class="spinner"></div>
+            <p id="loading-message">Carregando Pokémons...</p>
+        </div>
+        <div id="error-message" class="hidden">
+            <p></p>
+            <button id="btn-error-return">Voltar ao Menu</button>
+        </div>
+
+        <div id="panel" class="hidden"> 
+            <span>Movimentos: <span id="moves">0</span></span>
+            <button id="restart">REINICIAR</button> 
+        </div>
+        
+        <div id="region-selection" class="screen">
+            <h2>Seja Bem-Vindo! Escolha uma Região:</h2>
+            <div class="options-container">
+                <button id="btn-start-kanto" data-region="kanto">Kanto (Geração I)</button> 
+                <button id="btn-start-johto" data-region="johto">Johto (Geração II)</button>
+                <button id="btn-start-hoenn" data-region="hoenn">Hoenn (Geração III)</button>
+                <button id="btn-start-sinnoh" data-region="sinnoh">Sinnoh (Geração IV)</button>
+            </div>
+            
+            <hr>
+
+            <button class="create-button" id="btn-show-custom">
+                Criar Jogo Personalizado
+            </button>
+        </div>
+
+        <div id="custom-creation" class="screen hidden">
+            <h2>Criar Pokémons Personalizados</h2>
+            <p>Adicione <strong>no mínimo 8 Pokémons diferentes</strong> (para 16 cartas).</p>
+            
+            <div id="pokemon-inputs-container">
+                </div>
+
+            <button id="btn-add-pokemon">Adicionar Pokémon</button>
+            <button disabled id="start-custom-button">
+                Iniciar Jogo Personalizado (0/8 Mínimo)
+            </button>
+            
+            <button class="back-button" id="btn-custom-back">&larr; Voltar</button>
+        </div>
+
+        <div id="game-board" class="screen hidden">
+            <div id="board">
+                </div>
+            
+            <button class="back-button" id="btn-game-back">&larr; Voltar ao Menu</button>
+        </div>
+
+        <div id="win-screen" class="screen hidden">
+            <h2>🎉 Parabéns, Vencedor! 🎉</h2>
+            <p>Você completou o jogo em <strong id="final-moves">0</strong> movimentos.</p>
+            <button id="btn-win-return">Jogar Novamente</button>
+        </div>
+
+    </div>
+    
+    <script type="module" src="./scr/main.ts"></script>
+</body>
+</html>
